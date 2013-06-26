@@ -12,10 +12,13 @@
 # Sample Usage:
 #
 class gcc {
- 
-  include gcc::params
-
-  package { $gcc::params::gcc_package:
-    ensure => installed 
+  case $operatingsystem {
+    'fedora', 'centos', 'redhat': {
+       if ! defined(Package['gcc'])               { package { 'gcc':             ensure => installed } }
+    }
+    'ubuntu', 'debian': {
+       if ! defined(Package['build-essential'])  { package { 'build-essential': ensure => installed } }
+       if ! defined(Package['gcc'])              { package { 'gcc':             ensure => installed } }
+    }
   }
 }
